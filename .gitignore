@@ -1,0 +1,11 @@
+/.idea/
+/build
+/bin
+/.gradle/
+/Report/
+/out/
+/screenshoots/
+*.apk
+*.txt
+.classpath
+.project

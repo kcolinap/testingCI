@@ -1,0 +1,128 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    mavenLocal()
+    maven { url "http://dl.bintray.com/epam/reportportal" }
+    maven { url "https://nexus-v3-repositories.automation.crowdaronline.com/repository/maven-public" }
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+sourceCompatibility = 1.8
+
+/*
+    Usage Example:
+        gradlew -PtestType=r -PrunEnv=sg -PrunMode=browserstack regressionTest
+
+    -PtestType could be: r or j or jm or klov (Only for STAGE) or cu or cuff
+    -PrunEnv could be: t or d or s or sg
+    -PrunMode could be: local or kobiton or browserstack or soucelabs
+
+ */
+task regressionTest(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "SuiteRunner"
+    systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+    systemProperty "klov.project.name","nw-uiAutomation"
+    systemProperty "klov.report.name","JenkinsBuildId"
+    if (project.hasProperty("testType") && project.hasProperty("runEnv") && project.hasProperty("runMode")) {
+            args project.property("testType").toString(), project.property("runEnv").toString(), project.property("runMode").toString()
+    } else {
+        args "r", "t", "local"
+    }
+}
+
+task regressionJenkinsTest(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "SuiteRunner"
+    if (project.hasProperty("testType") && project.hasProperty("runEnv") && project.hasProperty("runMode")) {
+        args project.property("testType").toString(), project.property("runEnv").toString(), project.property("runMode").toString()
+    } else {
+        args "j", "t", "local"
+    }
+}
+
+task regressionJenkinsManualTest(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "SuiteRunner"
+    systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+    if (project.hasProperty("testType") && project.hasProperty("runEnv") && project.hasProperty("runMode")) {
+        args project.property("testType").toString(), project.property("runEnv").toString(), project.property("runMode").toString()
+    } else {
+        args "jm", "t", "local"
+    }
+}
+
+task userCreation(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "SuiteRunner"
+    systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+    if (project.hasProperty("testType") && project.hasProperty("runEnv") && project.hasProperty("runMode")) {
+        args project.property("testType").toString(), project.property("runEnv").toString(), project.property("runMode").toString()
+    } else {
+        args "cu", "t", "local"
+    }
+}
+
+task regressionDev(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "SuiteRunner"
+    args "r", "sg", "kobiton"
+}
+
+task regressionStaging(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "SuiteRunner"
+    args "r", "sg", "local"
+}
+
+task regressionKlovStaging(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "SuiteRunner"
+    args "klov", "sg", "browserstack"
+}
+
+task smokeStaging(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    main = "SuiteRunner"
+    args "sgsmoke", "sg", "browserstack"
+}
+
+dependencies {
+
+    compile 'org.seleniumhq.selenium:selenium-java:3.141.59'
+    compile 'junit:junit:4.12'
+    compile 'io.appium:java-client:7.3.0'
+    compile 'org.postgresql:postgresql:42.2.5'
+    compile 'io.cucumber:cucumber-picocontainer:5.5.0'
+    compile 'com.github.javafaker:javafaker:0.16'
+    compile 'org.apache.logging.log4j:log4j-core:2.12.1'
+    compile 'org.apache.logging.log4j:log4j-api:2.12.1'
+    compile 'com.jcraft:jsch:0.1.55'
+    compile 'org.mongodb:mongo-java-driver:3.9.1'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile 'io.rest-assured:rest-assured:4.1.2'
+    // compile 'com.epam.reportportal:agent-java-cucumber4:4.1.0'
+
+    testCompile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.12.1'
+
+    compile 'com.epam.reportportal:client-java:4.0.4'
+    compile 'com.epam.reportportal:commons-model:4.0.3'
+
+
+    testCompile 'io.cucumber:cucumber-java:5.5.0'
+    testCompile 'io.cucumber:cucumber-junit:5.5.0'
+    // report server adapter
+    testCompile 'com.crowdar.report:extentreports-cucumber5-adapter:1.3.1.1'
+    compile 'com.crowdar.report:extentreports-cucumber5-adapter:1.3.1.1'
+
+    // Para yopmail
+    compile 'org.jsoup:jsoup:1.13.1'
+    
+}
+    
