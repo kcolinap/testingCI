@@ -7,7 +7,9 @@ pipeline{
       }
     }
     stage("Run suite test cases"){
-      echo "Running test cases"
+      steps{
+        echo "Running test cases"
+      }
     }
   }
   
