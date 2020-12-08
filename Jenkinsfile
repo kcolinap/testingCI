@@ -1,10 +1,13 @@
 pipeline{
   agent any
   stages{
-    stage(construct){
+    stage("Cloning repository"){
       steps{
-        echo "hola mundo"
+        echo "cloning repository"
       }
+    }
+    stage("Run suite test cases"){
+      echo "Running test cases"
     }
   }
   
